@@ -45,7 +45,7 @@
                     @foreach ($topics as $item)
                         <flux:button
                             wire:key="topic-{{ $item['value'] }}"
-                            wire:click="$set('topic', '{{ $item['value'] }}')"
+                            wire:click="setTopic('{{ $item['value'] }}')"
                             :variant="$topic === $item['value'] ? 'primary' : 'outline'"
                             color="sky"
                             size="sm"
@@ -152,11 +152,31 @@
 
             @if ($hasMorePages)
                 <div
-                    wire:intersect.margin.200px="nextPage"
+                    x-data="{
+                        loadingMore: false,
+                        loadMoreOnScroll() {
+                            if (this.loadingMore || window.scrollY < 80) {
+                                return;
+                            }
+
+                            if (this.$refs.loader.getBoundingClientRect().top > window.innerHeight + 200) {
+                                return;
+                            }
+
+                            this.loadingMore = true;
+
+                            this.$wire.nextPage().finally(() => {
+                                this.loadingMore = false;
+                            });
+                        }
+                    }"
+                    x-ref="loader"
+                    x-on:scroll.window.throttle.150ms="loadMoreOnScroll()"
+                    x-on:resize.window.throttle.150ms="loadMoreOnScroll()"
                     class="rounded-[1.5rem] border border-dashed border-zinc-300/80 bg-white/65 px-6 py-5 text-center"
                 >
                     <p class="text-sm font-medium text-zinc-600">
-                        Можно перейти дальше кнопками выше или просто дойти до конца блока, чтобы открыть следующую страницу.
+                        Можно перейти дальше кнопками выше или после реальной прокрутки вниз открыть следующую страницу.
                     </p>
                 </div>
             @else

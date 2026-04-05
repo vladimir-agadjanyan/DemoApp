@@ -14,6 +14,7 @@ class DemoPageTest extends TestCase
             ->assertOk()
             ->assertSee('Каталог сценариев для команды продукта')
             ->assertSee('Внутренняя витрина')
-            ->assertSee('wire:intersect', false);
+            ->assertSee('реальной прокрутки страницы')
+            ->assertDontSee('wire:intersect', false);
     }
 }

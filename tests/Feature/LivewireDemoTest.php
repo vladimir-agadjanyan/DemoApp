@@ -53,6 +53,24 @@ class LivewireDemoTest extends TestCase
         ], $component->filteredPosts()->pluck('title')->all());
     }
 
+    public function test_catalog_returns_to_the_first_page_when_all_topic_is_selected(): void
+    {
+        $component = new DemoCatalog();
+        $component->goToPage(2);
+        $component->setTopic('all');
+
+        $this->assertSame(1, $component->page);
+        $this->assertSame(1, $component->currentPage());
+        $this->assertSame([
+            'Маршрут Москва - Казань',
+            'Рефрижераторный рейс в Екатеринбург',
+            'Окно отгрузки на складе Восток',
+            'Пересортировка паллет перед отправкой',
+            'Контроль SLA по доставкам',
+            'Оповещение о простое транспорта',
+        ], $component->pagePosts()->pluck('title')->all());
+    }
+
     public function test_modal_opens_when_show_is_called_and_can_be_closed(): void
     {
         $component = new PostDetailsModal();

@@ -25,6 +25,16 @@ class DemoCatalog extends Component
         $this->resetPagination();
     }
 
+    public function setTopic(string $topic): void
+    {
+        if (! $this->topics()->pluck('value')->contains($topic)) {
+            return;
+        }
+
+        $this->topic = $topic;
+        $this->resetPagination();
+    }
+
     public function loadMore(): void
     {
         $this->nextPage();
